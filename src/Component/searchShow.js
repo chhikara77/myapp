@@ -12,11 +12,10 @@ const SearchForm = (props) => {
     setSearchTerm(e.target.value);
   };
 useEffect(()=>{
-console.log(token)
+console.log(searchResults)
 },[token])
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log("token search",token)
     // Perform search logic here
     // For demonstration purposes, let's assume searchResults is an array of TV show objects
     const firstShowId = searchTerm;
@@ -27,17 +26,18 @@ console.log(token)
 })
   .then((data) => {
         // Process the data received from the API
-        console.log(data);
-        setSearchResults(data);
+        return data.json()
         
         // Redirect to the search page or perform any other actions
       })
-      .catch((error) => {
-        // Handle any errors
+      .then(data => {
+        // Use the retrieved data
+        console.log(data);
+        setSearchResults(data.shows);
+      })
+      .catch(error => {
         console.error(error);
       });
-  
-    setSearchResults(searchResults);
     // Reset search term
     setSearchTerm('');
     setShowSnackbar(searchResults.length === 0);
@@ -62,34 +62,36 @@ console.log(token)
       {searchResults.length > 0 && (
         <div>
           <Typography variant="h6">Search Results:</Typography>
-          {searchResults.map((show) => (
-            <Card key={show.id} variant="outlined" style={{ margin: '10px 0' }}>
+          {searchResults.map((item) => (
+            <Card key={item.show.id} variant="outlined" style={{ margin: '10px 0',display:"flex" }}>
               <CardMedia
                 component="img"
-                alt={show.name}
-                height="200"
-                image={show.image.medium}
-                title={show.name}
+                alt={item.show.name}
+                height="300"
+                width="200"
+                image={item.show.image.medium}
+                title={item.show.name}
+                style={{ width: '20%' }}
               />
               <CardContent>
                 <Typography variant="h6" component="h2">
-                  {show.name}
+                  {item.show.name}
                 </Typography>
-                <Typography color="textSecondary">{show.summary}</Typography>
+                <Typography color="textSecondary">{item.show.summary}</Typography>
                 <Typography variant="body2" color="textSecondary">
-                  <strong>Type:</strong> {show.type}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  <strong>Language:</strong> {show.language}
+                  <strong>Type:</strong> {item.show.type}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  <strong>Genres:</strong> {show.genres.join(', ')}
+                  <strong>Language:</strong> {item.show.language}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  <strong>Status:</strong> {show.status}
+                  <strong>Genres:</strong> {item.show.genres.join(', ')}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  <strong> Schedule:</strong> {show.schedule.days.join(', ')} at {show.schedule.time}
+                  <strong>Status:</strong> {item.show.status}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  <strong> Schedule:</strong> {item.show.schedule.days.join(', ')} at {item.show.schedule.time}
                                     </Typography>
                                   </CardContent>
                                 </Card>

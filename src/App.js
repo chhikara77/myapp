@@ -9,7 +9,6 @@ import { createContext } from "react";
 export const userContext = createContext();
 function App() {
   const [token,setToken] = useState("uyiuyiyu878")
-  console.log("app token",token)
   useEffect(()=>{
 
   },[token])
